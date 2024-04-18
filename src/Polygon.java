@@ -1,32 +1,31 @@
+public class Polygon implements Shape{
+    private Vec2[] points;
+    private Style style;
 
-
-
-import java.io.StringReader;
-public class Polygon extends Shape {
-    private Point[] points;
-    public Polygon(Point[] points, Style style) {
-        super(style);
+    public Polygon(Vec2[] points) {
+        this.style = new Style("none","black",1.0);
         this.points = points;
     }
-    public Polygon(Point[] points) {
-        super(new Style("none","black", 1.0));
-        this.points = points;
-
-    }
-    public String toSvg() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<polygon points=\"");
-        for (Point point : points) {
-            stringBuilder.append(point.x).append(",").append(point.y).append(" ");
+    @Override
+    public String toSvg(String parameters) {
+        StringBuilder string = new StringBuilder();
+        string.append("<polygon points='");
+        for (Vec2 vec2 : points) {
+            string.append(vec2.x).append(",").append(vec2.y).append(" ");
         }
-        stringBuilder.append(style.toSvg()).append("/>");
-        return stringBuilder.toString();
+        string.append("' ").append(parameters).append(" />");
+        return string.toString();
     }
-    public Polygon(Polygon src) {
-        super(new Style(src.style.fillColor, src.style.strokeColor, src.style.strokeWidth));
-        this.points = new Point[src.points.length];
-        for (int i = 0; i < points.length; ++i) {
-            points[i] = new Point(src.points[i].x, src.points[i].y);
-        }
+    public static Polygon square(Segment diagonal, Style style) {
+        double cx = (diagonal.getStartPoint().getX() + diagonal.getEndPoint().getX()) / 2;
+        double cy = (diagonal.getStartPoint().getY() + diagonal.getEndPoint().getY()) / 2;
+        Vec2 center = new Vec2(cx, cy);
+        Segment[] perpendiculars = Segment.perpendicularSegments(diagonal,center,diagonal.length()/2);
+        
+        Vec2[] vec2s = new Vec2[4];
+        vec2s[0] = diagonal.getStartPoint();
+        vec2s[1] = perpendiculars[1].getEndPoint(); 
+        vec2s[2] = diagonal.getEndPoint();
+        vec2s[3] = perpendiculars[0].getEndPoint(); 
     }
 }

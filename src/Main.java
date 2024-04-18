@@ -1,27 +1,28 @@
 public class Main {
     public static void main(String[] args) {
+        Shape polygon = new Polygon(new Vec2[]{
+                new Vec2(200,100),
+                new Vec2(200,200),
+                new Vec2(300,100),
+        });
+        polygon = new SolidFillShapeDecorator(polygon,"green");
+        polygon = new StrokeShapeDecorator(polygon,"blue",3);
 
-        Point[] pointsArray = {new Point(50, 50), new Point(50, 20), new Point(100, 20),new Point(100, 50)};
-        Polygon polygon = new Polygon(pointsArray);
-        System.out.println(polygon.toSvg());
-        Polygon copypol = new Polygon(polygon);
-        System.out.println(copypol.toSvg());
-        Style s1 = new Style("red","yellow",3);
-        Style s2 = new Style("none","green",2);
-        Polygon polygon2 = new Polygon(pointsArray,s1);
-        System.out.println(polygon2.toSvg());
+        Shape ellipse = new Ellipse(new Vec2(100, 400), 50, 100);
+        TransformationDecorator.Builder builder = new TransformationDecorator.Builder(
+                new SolidFillShapeDecorator(ellipse,"red"));
+        Shape s =
+                builder
+                .rotate(-25, new Vec2(0, 0))
+                .translate(new Vec2(20, 20))
+                .scale(new Vec2(1.5, 1.5))
+                .build();
 
-        Point[] pointsArray2 = {new Point(100, 100), new Point(100, 40), new Point(200, 40),new Point(200, 100)};
-        Polygon p2 = new Polygon(pointsArray2,s1);
-        Point[] pointsArray3 = {new Point(100, 100), new Point(100, 150), new Point(135, 165),new Point(150, 200),new Point(200, 200)};
-        Polygon p3 = new Polygon(pointsArray3,s2);
-        SvgScene scene = new SvgScene();
+        SvgScene scene = SvgScene.getInstance();
+        scene.addShape(polygon);
+        scene.addShape(ellipse);
+        scene.addShape(s);
 
-        Ellipse ellipse = new Ellipse(new Point(10,10), 10, 12);
-
-        scene.add(p2);
-        scene.add(ellipse);
-        scene.add(p3);
         scene.save("./out.html");
     }
 }
